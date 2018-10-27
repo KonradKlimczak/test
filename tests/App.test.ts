@@ -1,17 +1,23 @@
 import * as assert from "assert";
-import { App } from "../src";
+import { App } from "../src/App";
 
 describe("App", function() {
   describe("Cube solver", function() {
     it("should return 1, which is the simples solution", () => {
       const expected = 1;
+      console.time("should return 1, which is the simples solution");
       const result = App(1, 1, 1, 1);
+      console.timeEnd("should return 1, which is the simples solution");
+
       assert.equal(result, expected, "OMG IT FAILS IN the simplest case possible!");
     });
 
     it("should return 1000 for 10 10 10 2000", () => {
       const expected = 1000;
+      
+      console.time("should return 1000 for 10 10 10 2000");
       const result = App(10, 10, 10, 2000);
+      console.timeEnd("should return 1000 for 10 10 10 2000");
       assert.equal(result, expected, `Returned ${result} instead of ${expected}.`);
     });
 
@@ -39,10 +45,10 @@ describe("App", function() {
       assert.equal(result, expected, `Returned ${result} instead of ${expected}.`);
     });
 
-    // it("should solve really hard example", () => {
-    //   const expected = 50070;
-    //   const result = App(1000, 1000, 1000, 0, 0, 0, 46501, 0, 2791, 631, 127, 19, 1);
-    //   assert.equal(result, expected, `Returned ${result} instead of ${expected}.`);
-    // });
+    it("should solve really hard example", () => {
+      const expected = 50070;
+      const result = App(1000, 1000, 1000, 0, 0, 0, 46501, 0, 2791, 631, 127, 19, 1);
+      assert.equal(result, expected, `Returned ${result} instead of ${expected}.`);
+    });
   });
 });

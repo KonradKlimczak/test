@@ -2,8 +2,9 @@
   "name": "cube-solver",
   "version": "0.0.0",
   "description": "Very nice program that helps me clean my room and organize my stuff.",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "start": "ts-node index.ts",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
     "testWithCoverage": "nyc -r lcov -e .ts -x \"*.test.ts\" mocha -r ts-node/register tests/**/*.test.ts && nyc report"
   },

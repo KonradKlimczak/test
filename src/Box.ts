@@ -13,6 +13,7 @@ export class Box {
   private boxSpace: Array<Array<Array<BoxSpace>>>;
 
   private spaceLeft: number;
+  private firstEmpty: [number, number, number];
 
   constructor(boxX: number, boxY: number, boxZ: number) {
     this.width = boxX;
@@ -20,13 +21,21 @@ export class Box {
     this.depth = boxZ;
     this.boxSpace = this.createBoxSpace();
     this.spaceLeft = boxX * boxY * boxZ;
+    this.firstEmpty = [1, 1, 1];
   }
 
   public getFreeSpace(cubeSize: number): FreeSpace | null {
+    let [depthIndex, heightIndex, widthIndex] = this.firstEmpty;
     if (this.depth >= cubeSize && this.height >= cubeSize && this.width >= cubeSize) {
-      for (let depthIndex = 1; depthIndex <= this.depth; depthIndex++) {
-        for (let heightIndex = 1; heightIndex <= this.height; heightIndex++) {
-          for (let widthIndex = 1; widthIndex <= this.width; widthIndex++) {
+      for (; depthIndex <= this.depth; depthIndex++) {
+        if (heightIndex > this.height) {
+          heightIndex = 1;
+        }
+        for (; heightIndex <= this.height; heightIndex++) {
+          if (widthIndex > this.width) {
+            widthIndex = 1;
+          }
+          for (; widthIndex <= this.width; widthIndex++) {
             const cubeSpaceInBox = this.getFreeSpaceForCube(depthIndex, heightIndex, widthIndex, cubeSize);
 
             if (cubeSpaceInBox !== null) {
@@ -47,11 +56,34 @@ export class Box {
     return this.spaceLeft === 0;
   }
 
+  private getNextEmpty(): [number, number, number] {
+    let [depthIndex, heightIndex, widthIndex] = this.firstEmpty;
+    for (; depthIndex <= this.depth; depthIndex++) {
+      if (heightIndex > this.height) {
+        heightIndex = 1;
+      }
+      for (; heightIndex <= this.height; heightIndex++) {
+        if (widthIndex > this.width) {
+          widthIndex = 1;
+        }
+        for (; widthIndex <= this.width; widthIndex++) {
+          if (this.boxSpace[depthIndex - 1][heightIndex - 1][widthIndex - 1] === BoxSpace.Free) {
+            return [depthIndex, heightIndex, widthIndex];
+          }
+        }
+      }
+    }
+    return [depthIndex, heightIndex, widthIndex];
+  }
+
   private fill(freeSpace: FreeSpace) {
     for (const [depthIndex, heightIndex, widthIndex] of freeSpace) {
       this.boxSpace[depthIndex][heightIndex][widthIndex] = BoxSpace.Filled;
     }
     this.spaceLeft -= freeSpace.length;
+    if (this.spaceLeft > 0) {
+      this.firstEmpty = this.getNextEmpty();
+    }
   }
 
   private getFreeSpaceForCube(
