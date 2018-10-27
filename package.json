@@ -4,7 +4,8 @@
   "description": "Very nice program that helps me clean my room and organize my stuff.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register tests/**/*.test.ts",
+    "testWithCoverage": "nyc -r lcov -e .ts -x \"*.test.ts\" mocha -r ts-node/register tests/**/*.test.ts && nyc report"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,16 @@
   },
   "homepage": "https://github.com/KonradKlimczak/test#readme",
   "dependencies": {
+    "@types/node": "^10.12.0",
+    "node": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "ts-node": "^7.0.1",
     "typescript": "^3.1.3"
   }
 }
