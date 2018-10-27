@@ -3,7 +3,6 @@ import { App } from "./src/App";
 function printHelp() {
   console.log("Use:");
   console.log("\t help - to display this.");
-  console.log("\t file <filename> - to load file with boxes and cubes.");
   console.log("\t <arguments> (e.g 2 2 2 44) - to execute program.");
 }
 
