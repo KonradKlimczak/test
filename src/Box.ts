@@ -30,7 +30,6 @@ export class Box {
             const cubeSpaceInBox = this.getFreeSpaceForCube(depthIndex, heightIndex, widthIndex, cubeSize);
 
             if (cubeSpaceInBox !== null) {
-              console.log("Box: ", `I found space left inside me.`);
               return cubeSpaceInBox;
             }
           }
@@ -45,10 +44,6 @@ export class Box {
   }
 
   public isFull() {
-    console.log("Box: ", `I have ${this.spaceLeft} space left inside me.`);
-    if (this.spaceLeft === 0) {
-      console.log("Box: ", `I am full`);
-    }
     return this.spaceLeft === 0;
   }
 
@@ -56,11 +51,7 @@ export class Box {
     for (const [depthIndex, heightIndex, widthIndex] of freeSpace) {
       this.boxSpace[depthIndex][heightIndex][widthIndex] = BoxSpace.Filled;
     }
-    console.log("Box: ", `BEFORE: I have ${this.spaceLeft} space left inside me.`);
-    console.log("Box: ", `${freeSpace.length} - space taken`);
-    console.log(freeSpace);
     this.spaceLeft -= freeSpace.length;
-    console.log("Box: ", `AFTER: I have ${this.spaceLeft} space left inside me.`);
   }
 
   private getFreeSpaceForCube(

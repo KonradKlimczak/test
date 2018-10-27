@@ -23,12 +23,9 @@ export class BoxKeeper {
       for (let cubeUnit = 0; cubeUnit < cube.amount; cubeUnit++) {
         const freeSpaceForCube = this.box.getFreeSpace(cube.size);
         if (freeSpaceForCube) {
-          console.log("Mr Bob: ", `I have cube with size: ${cube.size}. I put it into box.`);
           this.box.insertCube(freeSpaceForCube);
           this.cubesInside += 1;
-          console.log("Mr Bob: ", `There are ${this.cubesInside} cubes inside the box.`);
           if (this.box.isFull()) {
-            console.log("Mr Bob: ", `Box is full!`);
             return this.cubesInside;
           }
         } else {
@@ -36,7 +33,6 @@ export class BoxKeeper {
         }
       }
     }
-    console.log("Mr Bob: ", `I don't know how to fill this box!`);
     return -1;
   }
 }
