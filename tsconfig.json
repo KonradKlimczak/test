@@ -2,5 +2,6 @@
   "compilerOptions": {
     "target": "esnext",
     "strict": true
-  }
+  },
+  "include": ["src", "tests"]
 }

@@ -3,14 +3,16 @@ export enum BoxSpace {
   Filled
 }
 
+export type FreeSpace = [number, number, number][];
+
 export class Box {
-  width: number;
-  height: number;
-  depth: number;
+  private width: number;
+  private height: number;
+  private depth: number;
 
-  boxSpace: Array<Array<Array<BoxSpace>>>;
+  private boxSpace: Array<Array<Array<BoxSpace>>>;
 
-  spaceLeft: number;
+  private spaceLeft: number;
 
   constructor(boxX: number, boxY: number, boxZ: number) {
     this.width = boxX;
@@ -20,68 +22,89 @@ export class Box {
     this.spaceLeft = boxX * boxY * boxZ;
   }
 
-  public cubeCanFit(cubeSide: number): boolean {
-    if (this.width >= cubeSide && this.height >= cubeSide && this.depth >= cubeSide) {
-      return true;
-    }
-    return false;
-  }
+  public getFreeSpace(cubeSize: number): FreeSpace | null {
+    if (this.depth >= cubeSize && this.height >= cubeSize && this.width >= cubeSize) {
+      for (let depthIndex = 1; depthIndex <= this.depth; depthIndex++) {
+        for (let heightIndex = 1; heightIndex <= this.height; heightIndex++) {
+          for (let widthIndex = 1; widthIndex <= this.width; widthIndex++) {
+            const cubeSpaceInBox = this.getFreeSpaceForCube(depthIndex, heightIndex, widthIndex, cubeSize);
 
-  public insertCube(size: number) {
-    let availableSpace = 0;
-    for (let depthIndex = 0; depthIndex < this.boxSpace.length; depthIndex++) {
-      const depthUnit = this.boxSpace[depthIndex];
-      for (let heightIndex = 0; heightIndex < depthUnit.length; heightIndex++) {
-        const heightUnit = depthUnit[heightIndex];
-        for (let widthIndex = 0; widthIndex < heightUnit.length; widthIndex++) {
-          const cubeSpaceInBox = this.getCubeSpaceInBox(depthIndex, heightIndex, widthIndex, size);
-          if (cubeSpaceInBox !== null) {
-            this.fill(cubeSpaceInBox);
-            return cubeSpaceInBox.length;
+            if (cubeSpaceInBox !== null) {
+              console.log("Box: ", `I found space left inside me.`);
+              return cubeSpaceInBox;
+            }
           }
         }
       }
     }
-    return -1;
+    return null;
   }
 
-  private fill(boxSpaceCoordinates: [number, number, number][]) {
-    for (const [depthIndex, heightIndex, widthIndex] of boxSpaceCoordinates) {
+  public insertCube(freeSpace: FreeSpace) {
+    this.fill(freeSpace);
+  }
+
+  public isFull() {
+    console.log("Box: ", `I have ${this.spaceLeft} space left inside me.`);
+    if (this.spaceLeft === 0) {
+      console.log("Box: ", `I am full`);
+    }
+    return this.spaceLeft === 0;
+  }
+
+  private fill(freeSpace: FreeSpace) {
+    for (const [depthIndex, heightIndex, widthIndex] of freeSpace) {
       this.boxSpace[depthIndex][heightIndex][widthIndex] = BoxSpace.Filled;
     }
+    console.log("Box: ", `BEFORE: I have ${this.spaceLeft} space left inside me.`);
+    console.log("Box: ", `${freeSpace.length} - space taken`);
+    console.log(freeSpace);
+    this.spaceLeft -= freeSpace.length;
+    console.log("Box: ", `AFTER: I have ${this.spaceLeft} space left inside me.`);
   }
 
-  private getCubeSpaceInBox(
+  private getFreeSpaceForCube(
     depthStartIndex: number,
     heightStartIndex: number,
     widthStartIndex: number,
     size: number
-  ): [number, number, number][] | null {
-    const cubeSpaceInBox: [number, number, number][] = [];
-    const depthNeeded = depthStartIndex + size;
-    const heightNeeded = heightStartIndex + size;
-    const widthNeeded = widthStartIndex + size;
+  ): FreeSpace | null {
+    const spaceNeeded = size * size * size;
+    const cubeSpaceInBox: FreeSpace = [];
+    const depthNeeded = depthStartIndex + size - 1;
+    const heightNeeded = heightStartIndex + size - 1;
+    const widthNeeded = widthStartIndex + size - 1;
     if (depthNeeded > this.depth || heightNeeded > this.height || widthNeeded > this.width) {
       return null;
     }
 
-    for (let depthIndex = depthStartIndex; depthIndex < depthNeeded; depthIndex++) {
-      for (let heightIndex = depthStartIndex; heightIndex < heightNeeded; heightIndex++) {
-        for (let widthIndex = depthStartIndex; widthIndex < widthNeeded; widthIndex++) {
-          if (this.boxSpace[depthIndex][heightIndex][widthIndex] === BoxSpace.Filled) {
-            return null;
+    for (let depthIndex = depthStartIndex - 1; depthIndex < depthNeeded; depthIndex++) {
+      for (let heightIndex = heightStartIndex - 1; heightIndex < heightNeeded; heightIndex++) {
+        for (let widthIndex = widthStartIndex - 1; widthIndex < widthNeeded; widthIndex++) {
+          if (this.boxSpace[depthIndex][heightIndex][widthIndex] === BoxSpace.Free) {
+            cubeSpaceInBox.push([depthIndex, heightIndex, widthIndex]);
+            if (spaceNeeded === cubeSpaceInBox.length) {
+              return cubeSpaceInBox;
+            }
           }
-          cubeSpaceInBox.push([depthIndex, heightIndex, widthIndex]);
         }
       }
     }
-    return cubeSpaceInBox;
+
+    return null;
   }
 
   private createBoxSpace() {
-    const firstDimension = Array<BoxSpace>(this.width).fill(BoxSpace.Free);
-    const secondDimension = Array<Array<BoxSpace>>(this.height).fill(firstDimension.slice());
-    const thirdDimension = Array<Array<Array<BoxSpace>>>(this.depth).fill(secondDimension.slice());
-    return thirdDimension;
+    const boxSpace: Array<Array<Array<BoxSpace>>> = [];
+    for (let depth = 0; depth < this.depth; depth++) {
+      boxSpace[depth] = [];
+      for (let height = 0; height < this.height; height++) {
+        boxSpace[depth][height] = [];
+        for (let width = 0; width < this.width; width++) {
+          boxSpace[depth][height][width] = BoxSpace.Free;
+        }
+      }
+    }
+    return boxSpace;
   }
 }

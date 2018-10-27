@@ -1,31 +1,13 @@
 import { Box } from "./Box";
+import { BoxKeeper } from "./BoxKeeper";
+import { Cube } from "./Cube";
 
-interface IBox {
-  x: number;
-  y: number;
-  z: number;
-}
-
-function cubeFitsInBox(box: IBox, cubeSide: number): boolean {
-  if (box.x >= cubeSide && box.y >= cubeSide && box.z >= cubeSide) {
-    return true;
-  }
-  return false;
-}
-
-export function App(
-  boxX: number,
-  boxY: number,
-  boxZ: number,
-  ...cubes: number[]
-) {
+export function App(boxX: number, boxY: number, boxZ: number, ...cubes: number[]) {
   const box = new Box(boxX, boxY, boxZ);
+  const mrBob = new BoxKeeper(
+    box,
+    cubes.map((amount: number, rawCubeSize: number): Cube => ({ amount, size: rawCubeSize + 1 }))
+  );
 
-  cubes.forEach((numberOfCubes: number, rawCubeSize: number) => {
-    const cubeSize = rawCubeSize + 1;
-    console.log("cubeSize", cubeSize, "numberOfCubes", numberOfCubes);
-    console.log("cubeFitsInBox", box.cubeCanFit(cubeSize));
-  });
-
-  return 3;
+  return mrBob.putCubesIntoTheBox();
 }
