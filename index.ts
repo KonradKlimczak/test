@@ -15,9 +15,9 @@ function Main() {
     if (appArgs.length > 3) {
       const result = App(appArgs[0], appArgs[1], appArgs[2], ...appArgs.slice(3));
       console.info(`Box:`);
-      console.info(`Width: ${appArgs[0]}`);
-      console.info(`Height:${appArgs[1]}`);
-      console.info(`Depth: ${appArgs[2]}`);
+      console.info(`Width:  ${appArgs[0]}`);
+      console.info(`Height: ${appArgs[1]}`);
+      console.info(`Depth:  ${appArgs[2]}`);
       console.info(`Cubes: ${appArgs.slice(3).join(", ")}`);
       console.info(`Result: ${result}`);
     } else {
