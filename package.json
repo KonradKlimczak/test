@@ -1,0 +1,27 @@
+{
+  "name": "cube-solver",
+  "version": "0.0.0",
+  "description": "Very nice program that helps me clean my room and organize my stuff.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KonradKlimczak/test.git"
+  },
+  "keywords": [
+    "clean",
+    "mess",
+    "cube"
+  ],
+  "author": "Konrad Klimczak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KonradKlimczak/test/issues"
+  },
+  "homepage": "https://github.com/KonradKlimczak/test#readme",
+  "dependencies": {
+    "typescript": "^3.1.3"
+  }
+}
